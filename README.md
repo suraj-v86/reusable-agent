@@ -28,6 +28,7 @@ Note: The tickets and KB articles are sample dictionaries created only for this 
 - `agent.py`: contains the reusable loop
 - `tools.py`: contains the functions and their descriptions
 - `test_tools.py`: contains the pytest tests for the tools
+- `evals.py`: runs 10 test questions through the agent and checks which tools it used and what the answer contains
 
 ## How to run
 1. Create and activate a virtual environment
@@ -39,14 +40,21 @@ The code uses the OpenAI Responses API. Check the model name in `agent.py` and c
 
 To run the tests: `python -m pytest`
 
+To run the evals: `python evals.py` (this makes real API calls, so it costs a small amount)
+
 ## What I learned
 - How to write the functions and tool schemas so the agent can decide which tool to use for a query
 - How to build the loop and handle errors with try/except
 - How the system prompt shapes the agent's behavior
 - How to write pytest tests to check the functions before running the agent
+- How to write an eval set that checks whether the agent chooses the right tools and gives correct answers
+- Scores changed between runs of the same evals, and several early failures were checks that were too strict, not agent mistakes
+
+## Evals
+`evals.py` runs 10 questions through the agent, including cases where the ticket does not exist, the request is outside the tools, or the knowledge base has no matching article. For each one it checks which tools the agent used and whether the answer contains the expected words.
 
 ## Limitations and next steps
 - I used sample tickets and KB articles that I created myself
-- The tests cover the tools, not the LLM's behavior. An evaluation set is a next step
+- The evals use keyword checks, which cannot catch everything. For example, the agent sometimes added troubleshooting advice that was not in the knowledge base
 - I have not used retrieval-augmented generation (RAG) yet
 - This is a simple project to learn how an agent reads a query, chooses tools, and builds a final answer from their output
